@@ -30,10 +30,10 @@ function mainMenu() {
             mainMenu();
             break;
           case 'Add Employee':
-            mainMenu();
+            addEmployee();
             break;
           case 'Update Employee Role':
-            mainMenu();
+            updateEmployee();
             break;
           case 'View All Roles':
             //Query database for role table
@@ -41,14 +41,15 @@ function mainMenu() {
             mainMenu();
             break;
           case 'Add Role':
-            mainMenu();
+            addRole();
             break;
           case 'View All Departments':
+            //query database for department table
             department.runQuery();
             mainMenu();
             break;
           case 'Add Department':
-            mainMenu();
+            addDept();
             break;
           default:
             //exit inquirer 
@@ -57,6 +58,39 @@ function mainMenu() {
       });
 }
 
+const addEmployee = () => {
+
+}
+
+const addRole = () => {
+
+}
+
+const addDept = () => {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "deptName",
+        message: "What is the name of the department?",
+        validate(answer) {
+          if(!answer) {
+              return "Please provide a name of a department"
+          }
+          return true
+       }
+      }
+    ])
+    .then((data) => {
+        //uses the data to create an Engineer instance before pushing it to the team array
+        console.log(`Added ${data.deptName} to the database`);
+        
+    })
+}
+
+const updateEmployee = () => {
+
+}
 
 
 mainMenu();
