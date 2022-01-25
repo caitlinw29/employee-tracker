@@ -1,6 +1,10 @@
 const mysql = require('mysql2');
 const cTable = require('console.table');
 const inquirer = require('inquirer');
+const figlet = require('figlet');
+var chalkRainbow = require('chalk-rainbow')
+const term = require( 'terminal-kit' ).terminal ;
+
 
 // Connect to database
 const db = mysql.createConnection(
@@ -10,6 +14,19 @@ const db = mysql.createConnection(
     password: '',
     database: 'employees_db'
   }
+);
+
+//Show fun "Employee Tracker" text 
+console.log(
+  chalkRainbow(
+    figlet.textSync('Employee Tracker', {
+    font: 'big',
+    horizontalLayout: 'default',
+    verticalLayout: 'default',
+    width: 100,
+    whitespaceBreak: true
+    })
+  )
 );
 
 // Query database for department table
