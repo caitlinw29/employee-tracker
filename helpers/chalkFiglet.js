@@ -12,7 +12,9 @@ const chalkFiglet =
       width: 100,
       whitespaceBreak: true
       })
-    )
+    ),
+    "\n",
+    "\n"
   );
 
 module.exports = {
