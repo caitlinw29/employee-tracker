@@ -26,10 +26,28 @@ function mainMenu() {
         switch(choice.mainMenu){
           case 'View All Employees':
             //Query database for employee table
-              employee.runQuery();
-              mainMenu();
-              break;
+            employee.runQuery();
+            mainMenu();
+            break;
           case 'Add Employee':
+            mainMenu();
+            break;
+          case 'Update Employee Role':
+            mainMenu();
+            break;
+          case 'View All Roles':
+            //Query database for role table
+            role.runQuery();
+            mainMenu();
+            break;
+          case 'Add Role':
+            mainMenu();
+            break;
+          case 'View All Departments':
+            department.runQuery();
+            mainMenu();
+            break;
+          case 'Add Department':
             mainMenu();
             break;
           default:
