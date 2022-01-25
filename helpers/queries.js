@@ -20,7 +20,7 @@ class Query {
   //when we run a query, console.table will show the results in a table in the console.
   runQuery(){
     db.query(this.query, function (err, results) {
-      console.table(results);
+      console.table('\n', results, '\n');
     });
   }
 };
