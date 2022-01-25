@@ -13,6 +13,9 @@ The application will be invoked by using the following command:
 node index.js
 ``` 
 
+## Usage
+Make sure to create your own .env file, or change the information in queries.js to be able to use this app.
+
 ## User Story
 
 ```md

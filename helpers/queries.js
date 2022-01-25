@@ -4,9 +4,10 @@ require('console.table');
 // Connect to database
 const db = mysql.createConnection(
   {
-    host: 'localhost',
-    user: 'root',
-    password: '',
+    //TODO: Add your own information to use this app
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
     database: 'employees_db'
   }
 ); 

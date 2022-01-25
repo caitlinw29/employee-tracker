@@ -1,3 +1,4 @@
+require('dotenv').config()
 const inquirer = require('inquirer');
 const term = require( 'terminal-kit' ).terminal;
 const {department, role, employee} = require('./helpers/queries');
