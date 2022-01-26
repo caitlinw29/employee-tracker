@@ -63,7 +63,106 @@ function mainMenu() {
 }
 
 const addEmployee = () => {
-
+  inquirer
+  .prompt([
+    {
+      type: "input",
+      name: "firstName",
+      message: "What is the employee's first name?",
+      validate(answer) {
+        if(!answer) {
+            return "Please provide the first name of the employee"
+        }
+        return true
+     }
+    },
+    {
+      type: "input",
+      name: "lastName",
+      message: "What is the employee's last name?",
+      validate(answer) {
+        if(!answer) {
+            return "Please provide the last name of the employee"
+        }
+        return true
+     }
+    },
+    {
+      type: "list",
+      name: "role",
+      message: "What is the employee's role?",
+      choices: ["Sales Lead", "Salesperson", "Lead Engineer", "Software Engineer", "Account Manager", "Accountant", "Legal Team Lead", "Lawyer"]
+    },
+    {
+      type: "list",
+      name: "manager",
+      message: "Who is the employee's manager?",
+      choices: ["None", "John Doe", "Mike Chan", "Ashley Rodriguez", "Kevin Tupik", "Kunal Singh", "Malia Brown", "Sarah Lourd", "Tom Allen"]
+    },
+  ])
+  .then((data) => {
+      let roleNum;
+      let managerNum;
+      switch(data.role){
+        case 'Sales Lead':
+          roleNum = 1;
+          break;
+        case 'Salesperson':
+          roleNum = 2;
+          break;
+        case 'Lead Engineer':
+          roleNum = 3;
+          break;
+        case 'Software Engineer':
+          roleNum = 4;
+          break;
+        case 'Account Manager':
+          roleNum = 5;
+          break;
+        case 'Accountant':
+          roleNum = 6;
+          break;
+        case 'Legal Team Lead':
+          roleNum = 7;
+          break;
+        case 'Lawyer':
+          roleNum = 8;
+          break;
+      }  
+      switch(data.manager){
+        case 'None':
+          managerNum = null;
+          break;
+        case 'John Doe':
+          managerNum = 1;
+          break;
+        case 'Mike Chan':
+          managerNum = 2;
+          break;
+        case 'Ashley Rodriguez':
+          managerNum = 3;
+          break;
+        case 'Kevin Tupik':
+          managerNum = 4;
+          break;
+        case 'Kunal Singh':
+          managerNum = 5;
+          break;
+        case 'Malia Brown':
+          managerNum = 6;
+          break;
+        case 'Sarah Lourd':
+          managerNum = 7;
+          break;
+        case 'Tom Allen':
+          managerNum = 8;
+          break;
+      }     
+      db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ('${data.firstName}', '${data.lastName}', ${roleNum}, ${managerNum});`, function () {
+        console.log(`Added ${data.firstName} ${data.lastName} to the database`);
+        mainMenu();
+      });
+  })
 }
 
 const addRole = () => {
