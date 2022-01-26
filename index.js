@@ -1,9 +1,19 @@
 require('dotenv').config()
+const mysql = require('mysql2');
 const inquirer = require('inquirer');
 const term = require( 'terminal-kit' ).terminal;
 const {department, role, employee} = require('./helpers/queries');
 require('./helpers/chalkFiglet');
 
+const db = mysql.createConnection(
+  {
+    //TODO: Add your own information to use this app
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: 'employees_db'
+  }
+); 
 // // Query database for department table
 // department.runQuery();
 
@@ -82,8 +92,10 @@ const addDept = () => {
       }
     ])
     .then((data) => {
-        //uses the data to create an Engineer instance before pushing it to the team array
-        console.log(`Added ${data.deptName} to the database`);
+        db.query(`INSERT INTO department (name) VALUES ('${data.deptName}');`, function () {
+          console.log(`Added ${data.deptName} to the database`);
+        });
+        
         
     })
 }
