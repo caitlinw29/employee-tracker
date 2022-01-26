@@ -15,6 +15,14 @@ const db = mysql.createConnection(
   }
 ); 
 
+const roleArr = []; //line 102 goes with this
+db.query('SELECT title FROM role', function (err, results) {
+  for (const role of results){
+    roleArr.push(role.title);
+  };
+  return roleArr;
+})
+
 //function runs on node index.js 
 function mainMenu() {
   inquirer
@@ -91,7 +99,7 @@ const addEmployee = () => {
       type: "list",
       name: "role",
       message: "What is the employee's role?",
-      choices: ["Sales Lead", "Salesperson", "Lead Engineer", "Software Engineer", "Account Manager", "Accountant", "Legal Team Lead", "Lawyer"]
+      choices: [...roleArr]
     },
     {
       type: "list",
