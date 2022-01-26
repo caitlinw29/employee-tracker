@@ -14,12 +14,6 @@ const db = mysql.createConnection(
     database: 'employees_db'
   }
 ); 
-// // Query database for department table
-// department.runQuery();
-
-// // Query database for role table
-// role.runQuery();
-
 
 //function runs on node index.js 
 function mainMenu() {
@@ -105,10 +99,22 @@ const addRole = () => {
     },
   ])
   .then((data) => {
-  
-      console.log(data.roleDept)
-  
-      db.query(`INSERT INTO role (title, salary, department_id) VALUES ('${data.roleName}', ${data.salary}, 1);`, function () {
+      let deptNum;
+      switch(data.roleDept){
+        case 'Sales':
+          deptNum = 1;
+          break;
+        case 'Engineering':
+          deptNum = 2;
+          break;
+        case 'Finance':
+          deptNum = 3;
+          break;
+        case 'Legal':
+          deptNum = 4;
+          break;
+      }     
+      db.query(`INSERT INTO role (title, salary, department_id) VALUES ('${data.roleName}', ${data.salary}, ${deptNum});`, function () {
         console.log(`Added ${data.roleName} to the database`);
         mainMenu();
       });
