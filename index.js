@@ -244,6 +244,54 @@ const addDept = () => {
 }
 
 const updateEmployee = () => {
+  inquirer
+  .prompt([
+    {
+      type: "list",
+      name: "employee",
+      message: "Which employee's role do you want to update?",
+      choices: ["John Doe", "Mike Chan", "Ashley Rodriguez", "Kevin Tupik", "Kunal Singh", "Malia Brown", "Sarah Lourd", "Tom Allen"]
+    },
+    {
+      type: "list",
+      name: "newRole",
+      message: "Which role do you want to assign the selected employee?",
+      choices: ["Sales Lead", "Salesperson", "Lead Engineer", "Software Engineer", "Account Manager", "Accountant", "Legal Team Lead", "Lawyer"]
+    },
+  ])
+  .then((data) => {
+      let roleNum;
+      switch(data.newRole){
+        case 'Sales Lead':
+          roleNum = 1;
+          break;
+        case 'Salesperson':
+          roleNum = 2;
+          break;
+        case 'Lead Engineer':
+          roleNum = 3;
+          break;
+        case 'Software Engineer':
+          roleNum = 4;
+          break;
+        case 'Account Manager':
+          roleNum = 5;
+          break;
+        case 'Accountant':
+          roleNum = 6;
+          break;
+        case 'Legal Team Lead':
+          roleNum = 7;
+          break;
+        case 'Lawyer':
+          roleNum = 8;
+          break;
+      }  
+      db.query(`UPDATE employee SET role_id = ${roleNum} WHERE CONCAT(first_name, ' ', last_name) = '${data.employee}';`, function () {
+        console.log(`Updated ${data.employee}'s role`);
+        mainMenu();
+      });
+  })
 
 }
 
