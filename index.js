@@ -216,6 +216,7 @@ const addRole = () => {
       }     
       db.query(`INSERT INTO role (title, salary, department_id) VALUES ('${data.roleName}', ${data.salary}, ${deptNum});`, function () {
         console.log(`Added ${data.roleName} to the database`);
+        roleArr.push(data.roleName);
         mainMenu();
       });
   })
