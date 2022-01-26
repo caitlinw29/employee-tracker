@@ -73,7 +73,46 @@ const addEmployee = () => {
 }
 
 const addRole = () => {
-
+  inquirer
+  .prompt([
+    {
+      type: "input",
+      name: "roleName",
+      message: "What is the name of the role?",
+      validate(answer) {
+        if(!answer) {
+            return "Please provide the name of a role"
+        }
+        return true
+     }
+    },
+    {
+      type: "input",
+      name: "salary",
+      message: "What is the salary of the role?",
+      validate(answer) {
+        if(!answer) {
+            return "Please provide the salary"
+        }
+        return true
+     }
+    },
+    {
+      type: "list",
+      name: "roleDept",
+      message: "Which department does the role belong to?",
+      choices: ["Sales", "Engineering", "Finance", "Legal"]
+    },
+  ])
+  .then((data) => {
+  
+      console.log(data.roleDept)
+  
+      db.query(`INSERT INTO role (title, salary, department_id) VALUES ('${data.roleName}', ${data.salary}, 1);`, function () {
+        console.log(`Added ${data.roleName} to the database`);
+        mainMenu();
+      });
+  })
 }
 
 const addDept = () => {
@@ -85,7 +124,7 @@ const addDept = () => {
         message: "What is the name of the department?",
         validate(answer) {
           if(!answer) {
-              return "Please provide a name of a department"
+              return "Please provide the name of a department"
           }
           return true
        }
@@ -94,9 +133,8 @@ const addDept = () => {
     .then((data) => {
         db.query(`INSERT INTO department (name) VALUES ('${data.deptName}');`, function () {
           console.log(`Added ${data.deptName} to the database`);
+          mainMenu();
         });
-        
-        
     })
 }
 
