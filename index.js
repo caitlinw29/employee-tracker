@@ -2,7 +2,7 @@ require('dotenv').config()
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
 const term = require( 'terminal-kit' ).terminal;
-const {department, role, employee} = require('./helpers/queries');
+const {department, role, employee, roleArr} = require('./helpers/queries');
 require('./helpers/chalkFiglet');
 
 const db = mysql.createConnection(
@@ -15,13 +15,6 @@ const db = mysql.createConnection(
   }
 ); 
 
-const roleArr = []; //line 102 goes with this
-db.query('SELECT title FROM role', function (err, results) {
-  for (const role of results){
-    roleArr.push(role.title);
-  };
-  return roleArr;
-})
 
 //function runs on node index.js 
 function mainMenu() {
@@ -264,7 +257,7 @@ const updateEmployee = () => {
       type: "list",
       name: "newRole",
       message: "Which role do you want to assign the selected employee?",
-      choices: ["Sales Lead", "Salesperson", "Lead Engineer", "Software Engineer", "Account Manager", "Accountant", "Legal Team Lead", "Lawyer"]
+      choices: [...roleArr]
     },
   ])
   .then((data) => {
