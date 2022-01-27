@@ -23,7 +23,7 @@ function mainMenu() {
             type: 'list',
             name: 'mainMenu',
             message: 'What would you like to do?',
-            choices: ['View All Employees', 'Add Employee', 'Update Employee Role', 'View All Roles', 'Add Role', 'View All Departments', 'Add Department', 'Quit']
+            choices: ['View All Employees', 'Add Employee', 'Update Employee Role', 'View All Roles', 'Add Role', 'View All Departments', 'Add Department', 'Delete Entry', 'Quit']
         }
       ])
       .then((choice) => {
@@ -61,6 +61,9 @@ function mainMenu() {
             break;
           case 'Add Department':
             addDept();
+            break;
+          case 'Delete Entry':
+            deletion();
             break;
           default:
             //exit inquirer 
@@ -246,6 +249,34 @@ const updateEmployee = () => {
         mainMenu();
       });
     })
+}
+
+const deletion = () => {
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        name: "deleteMenu",
+        message: "What would you like to delete?",
+        choices: ['Department', 'Role', 'Employee', 'Go Back']
+      },
+    ])
+    .then((choice) => {
+      switch(choice.deleteMenu){
+        case 'Department':
+          deleteDept();
+          break;
+        case 'Role':
+          deleteRole();
+          break;
+        case 'Employee':
+          deleteEmployee();
+          break;
+        default:
+          mainMenu();
+      }
+    })
+
 }
 
 mainMenu();
