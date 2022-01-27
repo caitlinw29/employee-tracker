@@ -1,7 +1,6 @@
 require('dotenv').config()
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
-const term = require( 'terminal-kit' ).terminal;
 const {department, role, employee, deptArr, roleArr, empArr} = require('./helpers/queries');
 require('./helpers/chalkFiglet');
 
