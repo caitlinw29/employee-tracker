@@ -1,8 +1,10 @@
-require('dotenv').config()
+require('dotenv').config();
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
-const {department, role, employee, sortByManager, sortByDept, sortByFirstName, sortByLastName, deptArr, roleArr, empArr} = require('./helpers/queries');
+const {department, role, employee, sortByManager, sortByDept, sortByFirstName, sortByLastName, deptArr, roleArr, empArr, managerArr} = require('./helpers/queries');
+//runs function on page load to show colored title
 require('./helpers/chalkFiglet');
+require('console.table');
 
 const db = mysql.createConnection(
   {
@@ -354,7 +356,7 @@ const sortEmp = () => {
         type: "list",
         name: "sortEmp",
         message: "How would you like to sort?",
-        choices: ["By Manager", "By Department", "By First Name", "By Last Name"]
+        choices: ["By Manager", "By Department", "By First Name", "By Last Name", "Choose a Manager", "Choose a Department"]
       },
     ])
     .then((choice) => {
@@ -383,9 +385,42 @@ const sortEmp = () => {
             mainMenu();
           }, 10);
           break;
+        case 'Choose a Manager':
+          chooseManager();
+          break;
+        case 'Choose a Department':
+          chooseDept();
+          break;
         default:
           mainMenu();
       }
+    })
+}
+
+const chooseManager = () => {
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        name: "chooseManager",
+        message: "Which manager's employees would you like to see?",
+        choices: [...managerArr]
+      },
+    ])
+    .then((choice) => {
+      db.query(`SELECT e.id, e.first_name, e.last_name, role.title, department.name as department, role.salary, CONCAT(m.first_name, ' ', m.last_name) as manager FROM employee AS e LEFT OUTER JOIN employee AS m ON e.manager_id = m.id JOIN role ON role.id = e.role_id INNER JOIN department ON department.id = role.department_id`, function (err, results) {
+        employeesOfManager = [];
+        for (let i=0; i<results.length; i++){
+          if (results[i].manager===choice.chooseManager){
+            employeesOfManager.push(results[i]);
+          }
+        }
+        console.log(`${choice.chooseManager}'s Employees:`)
+        console.table(employeesOfManager);
+        setTimeout(() => {
+          mainMenu();
+        }, 10);
+      });
     })
 }
 

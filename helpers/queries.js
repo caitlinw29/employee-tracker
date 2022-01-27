@@ -61,6 +61,15 @@ db.query('SELECT first_name, last_name FROM employee', function (err, results) {
   return empArr;
 })
 
+//put all managers in an array
+const managerArr = [];
+db.query('SELECT first_name, last_name FROM employee WHERE manager_id IS NULL', function (err, results) {
+  for (const manager of results){
+    managerArr.push(manager.first_name + " " + manager.last_name);
+  };
+  return managerArr;
+})
+
 module.exports = {
   department,
   role,
@@ -71,5 +80,6 @@ module.exports = {
   sortByLastName,
   deptArr,
   roleArr,
-  empArr
+  empArr,
+  managerArr
 }
