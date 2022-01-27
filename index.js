@@ -424,5 +424,32 @@ const chooseManager = () => {
     })
 }
 
+const chooseDept = () => {
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        name: "chooseDept",
+        message: "Which department would you like to see the employees of?",
+        choices: [...deptArr]
+      },
+    ])
+    .then((choice) => {
+      db.query(`SELECT e.id, e.first_name, e.last_name, role.title, department.name as department, role.salary, CONCAT(m.first_name, ' ', m.last_name) as manager FROM employee AS e LEFT OUTER JOIN employee AS m ON e.manager_id = m.id JOIN role ON role.id = e.role_id INNER JOIN department ON department.id = role.department_id`, function (err, results) {
+        employeesOfDept = [];
+        for (let i=0; i<results.length; i++){
+          if (results[i].department===choice.chooseDept){
+            employeesOfDept.push(results[i]);
+          }
+        }
+        console.log(` Employees of ${choice.chooseDept}:`)
+        console.table(employeesOfDept);
+        setTimeout(() => {
+          mainMenu();
+        }, 10);
+      });
+    })
+}
+
 mainMenu();
 
