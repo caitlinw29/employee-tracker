@@ -300,5 +300,49 @@ const deleteDept = () => {
     })
 }
 
+const deleteRole = () => {
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        name: "deleteRole",
+        message: "Which role would you like to delete?",
+        choices: [...roleArr]
+      },
+    ])
+    .then((data) => {
+      db.query(`DELETE FROM role WHERE title= '${data.deleteRole}'`, function () {
+        console.log(`Deleted ${data.deleteRole} from database`);
+        const index = roleArr.indexOf(data.deleteRole);
+        if (index > -1) {
+          roleArr.splice(index, 1);
+        }
+        mainMenu();
+      });
+    })
+}
+
+const deleteEmployee = () => {
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        name: "deleteEmp",
+        message: "Which employee would you like to delete?",
+        choices: [...empArr]
+      },
+    ])
+    .then((data) => {
+      db.query(`DELETE FROM employee WHERE CONCAT(first_name, ' ', last_name) = '${data.deleteEmp}';`, function () {
+        console.log(`Deleted ${data.deleteEmp} from database`);
+        const index = empArr.indexOf(data.deleteEmp);
+        if (index > -1) {
+          empArr.splice(index, 1);
+        }
+        mainMenu();
+      });
+    })
+}
+
 mainMenu();
 
