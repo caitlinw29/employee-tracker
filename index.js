@@ -2,7 +2,7 @@ require('dotenv').config()
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
 const term = require( 'terminal-kit' ).terminal;
-const {department, role, employee, roleArr} = require('./helpers/queries');
+const {department, role, employee, deptArr, roleArr, empArr} = require('./helpers/queries');
 require('./helpers/chalkFiglet');
 
 const db = mysql.createConnection(
@@ -45,6 +45,7 @@ function mainMenu() {
           case 'View All Roles':
             //Query database for role table
             role.runQuery();
+            //wait to show main Menu to avoid glitchy behavior
             setTimeout(() => {
               mainMenu();
             }, 10);
@@ -104,7 +105,7 @@ const addEmployee = () => {
       type: "list",
       name: "manager",
       message: "Who is the employee's manager?",
-      choices: ["None", "John Doe", "Mike Chan", "Ashley Rodriguez", "Kevin Tupik", "Kunal Singh", "Malia Brown", "Sarah Lourd", "Tom Allen"]
+      choices: ["None", ...empArr]
     },
   ])
   .then((data) => {
@@ -167,6 +168,7 @@ const addEmployee = () => {
       }     
       db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ('${data.firstName}', '${data.lastName}', ${roleNum}, ${managerNum});`, function () {
         console.log(`Added ${data.firstName} ${data.lastName} to the database`);
+        empArr.push(data.firstName + " " + data.lastName);
         mainMenu();
       });
   })
@@ -201,7 +203,7 @@ const addRole = () => {
       type: "list",
       name: "roleDept",
       message: "Which department does the role belong to?",
-      choices: ["Sales", "Engineering", "Finance", "Legal"]
+      choices: [...deptArr]
     },
   ])
   .then((data) => {
@@ -246,6 +248,7 @@ const addDept = () => {
     .then((data) => {
         db.query(`INSERT INTO department (name) VALUES ('${data.deptName}');`, function () {
           console.log(`Added ${data.deptName} to the database`);
+          deptArr.push(data.deptName);
           mainMenu();
         });
     })
@@ -258,7 +261,7 @@ const updateEmployee = () => {
       type: "list",
       name: "employee",
       message: "Which employee's role do you want to update?",
-      choices: ["John Doe", "Mike Chan", "Ashley Rodriguez", "Kevin Tupik", "Kunal Singh", "Malia Brown", "Sarah Lourd", "Tom Allen"]
+      choices: [...empArr]
     },
     {
       type: "list",
