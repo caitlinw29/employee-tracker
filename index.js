@@ -25,7 +25,7 @@ function mainMenu() {
             type: 'list',
             name: 'mainMenu',
             message: 'What would you like to do?',
-            choices: ['View All Employees', 'Add Employee', 'Update Employee Role', 'View All Roles', 'Add Role', 'View All Departments', 'Add Department', 'Sort Employees', 'Delete Entry', 'Quit']
+            choices: ['View All Employees', 'Add Employee', 'Update Employee Role', 'Sort Employees', 'View All Roles', 'Add Role', 'View All Departments', 'Add Department',  'View Utilized Budget', 'Delete Entry', 'Quit']
         }
       ])
       .then((choice) => {
@@ -69,6 +69,9 @@ function mainMenu() {
             break;
           case 'Delete Entry':
             deletion();
+            break;
+          case 'View Utilized Budget':
+            budget();
             break;
           default:
             //exit inquirer 
@@ -448,6 +451,30 @@ const chooseDept = () => {
           mainMenu();
         }, 10);
       });
+    })
+}
+
+const budget = () => {
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        name: "budget",
+        message: "For which department would you like to see the utilized budget?",
+        choices: [...deptArr]
+      }
+    ])
+    .then((data) => {
+        db.query(`SELECT department.name as department, role.salary FROM employee AS e JOIN role ON role.id = e.role_id INNER JOIN department ON department.id = role.department_id`, function (err, results) {
+          let totalBudget = 0;
+          for (let i=0; i<results.length; i++){
+            if(results[i].department === data.budget){
+              totalBudget += Number(results[i].salary);
+            }
+          }
+          console.log(`Total spending of ${data.budget}: $${totalBudget}`);
+          mainMenu();
+        });
     })
 }
 
