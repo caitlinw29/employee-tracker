@@ -217,15 +217,31 @@ const updateEmployee = () => {
         message: "Which role do you want to assign the selected employee?",
         choices: [...roleArr]
       },
+      {
+        type: "list",
+        name: "manager",
+        message: "Who is the employee's manager?",
+        choices: ["None", ...empArr]
+      },
     ])
     .then((data) => {
       let roleNum;
+      let managerNum;
+     
       for (i=0; i<roleArr.length; i++){
         if(roleArr[i] === data.newRole){
           roleNum = i+1;
         }
       }
-      db.query(`UPDATE employee SET role_id = ${roleNum} WHERE CONCAT(first_name, ' ', last_name) = '${data.employee}';`, function () {
+      for (i=0; i<empArr.length; i++){
+        if (data.manager === "None"){
+          managerNum = null;
+        }
+        if(empArr[i] === data.manager){
+          managerNum = i+1;
+        } 
+      }  
+      db.query(`UPDATE employee SET role_id = ${roleNum}, manager_id = '${managerNum}' WHERE CONCAT(first_name, ' ', last_name) = '${data.employee}';`, function () {
         console.log(`Updated ${data.employee}'s role`);
         mainMenu();
       });
