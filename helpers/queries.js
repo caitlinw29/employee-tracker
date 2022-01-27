@@ -71,6 +71,7 @@ db.query('SELECT first_name, last_name FROM employee WHERE manager_id IS NULL', 
 })
 
 module.exports = {
+  db,
   department,
   role,
   employee,
