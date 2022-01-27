@@ -32,6 +32,7 @@ function mainMenu() {
           case 'View All Employees':
             //Query database for employee table
             employee.runQuery();
+            //wait to show main menu to avoid glitchy behavior
             setTimeout(() => {
               mainMenu();
             }, 10);
@@ -45,7 +46,6 @@ function mainMenu() {
           case 'View All Roles':
             //Query database for role table
             role.runQuery();
-            //wait to show main Menu to avoid glitchy behavior
             setTimeout(() => {
               mainMenu();
             }, 10);
@@ -72,100 +72,58 @@ function mainMenu() {
 
 const addEmployee = () => {
   inquirer
-  .prompt([
-    {
-      type: "input",
-      name: "firstName",
-      message: "What is the employee's first name?",
-      validate(answer) {
-        if(!answer) {
-            return "Please provide the first name of the employee"
-        }
-        return true
-     }
-    },
-    {
-      type: "input",
-      name: "lastName",
-      message: "What is the employee's last name?",
-      validate(answer) {
-        if(!answer) {
-            return "Please provide the last name of the employee"
-        }
-        return true
-     }
-    },
-    {
-      type: "list",
-      name: "role",
-      message: "What is the employee's role?",
-      choices: [...roleArr]
-    },
-    {
-      type: "list",
-      name: "manager",
-      message: "Who is the employee's manager?",
-      choices: ["None", ...empArr]
-    },
-  ])
-  .then((data) => {
+    .prompt([
+      {
+        type: "input",
+        name: "firstName",
+        message: "What is the employee's first name?",
+        validate(answer) {
+          if(!answer) {
+              return "Please provide the first name of the employee"
+          }
+          return true
+      }
+      },
+      {
+        type: "input",
+        name: "lastName",
+        message: "What is the employee's last name?",
+        validate(answer) {
+          if(!answer) {
+              return "Please provide the last name of the employee"
+          }
+          return true
+      }
+      },
+      {
+        type: "list",
+        name: "role",
+        message: "What is the employee's role?",
+        choices: [...roleArr]
+      },
+      {
+        type: "list",
+        name: "manager",
+        message: "Who is the employee's manager?",
+        choices: ["None", ...empArr]
+      },
+    ])
+    .then((data) => {
       let roleNum;
       let managerNum;
-      switch(data.role){
-        case 'Sales Lead':
-          roleNum = 1;
-          break;
-        case 'Salesperson':
-          roleNum = 2;
-          break;
-        case 'Lead Engineer':
-          roleNum = 3;
-          break;
-        case 'Software Engineer':
-          roleNum = 4;
-          break;
-        case 'Account Manager':
-          roleNum = 5;
-          break;
-        case 'Accountant':
-          roleNum = 6;
-          break;
-        case 'Legal Team Lead':
-          roleNum = 7;
-          break;
-        case 'Lawyer':
-          roleNum = 8;
-          break;
-      }  
-      switch(data.manager){
-        case 'None':
+      for (i=0; i<roleArr.length; i++){
+        if(roleArr[i] === data.role){
+          roleNum = i+1;
+        }
+      }
+      for (i=0; i<empArr.length; i++){
+        if (data.manager === "None"){
           managerNum = null;
-          break;
-        case 'John Doe':
-          managerNum = 1;
-          break;
-        case 'Mike Chan':
-          managerNum = 2;
-          break;
-        case 'Ashley Rodriguez':
-          managerNum = 3;
-          break;
-        case 'Kevin Tupik':
-          managerNum = 4;
-          break;
-        case 'Kunal Singh':
-          managerNum = 5;
-          break;
-        case 'Malia Brown':
-          managerNum = 6;
-          break;
-        case 'Sarah Lourd':
-          managerNum = 7;
-          break;
-        case 'Tom Allen':
-          managerNum = 8;
-          break;
-      }     
+        }
+        if(empArr[i] === data.manager){
+          managerNum = i+1;
+        } 
+      }   
       db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ('${data.firstName}', '${data.lastName}', ${roleNum}, ${managerNum});`, function () {
         console.log(`Added ${data.firstName} ${data.lastName} to the database`);
         empArr.push(data.firstName + " " + data.lastName);
@@ -208,20 +166,11 @@ const addRole = () => {
   ])
   .then((data) => {
       let deptNum;
-      switch(data.roleDept){
-        case 'Sales':
-          deptNum = 1;
-          break;
-        case 'Engineering':
-          deptNum = 2;
-          break;
-        case 'Finance':
-          deptNum = 3;
-          break;
-        case 'Legal':
-          deptNum = 4;
-          break;
-      }     
+      for (i=0; i<deptArr.length; i++){
+        if(deptArr[i] === data.roleDept){
+          deptNum = i+1;
+        }
+      }
       db.query(`INSERT INTO role (title, salary, department_id) VALUES ('${data.roleName}', ${data.salary}, ${deptNum});`, function () {
         console.log(`Added ${data.roleName} to the database`);
         roleArr.push(data.roleName);
@@ -256,56 +205,33 @@ const addDept = () => {
 
 const updateEmployee = () => {
   inquirer
-  .prompt([
-    {
-      type: "list",
-      name: "employee",
-      message: "Which employee's role do you want to update?",
-      choices: [...empArr]
-    },
-    {
-      type: "list",
-      name: "newRole",
-      message: "Which role do you want to assign the selected employee?",
-      choices: [...roleArr]
-    },
-  ])
-  .then((data) => {
+    .prompt([
+      {
+        type: "list",
+        name: "employee",
+        message: "Which employee's role do you want to update?",
+        choices: [...empArr]
+      },
+      {
+        type: "list",
+        name: "newRole",
+        message: "Which role do you want to assign the selected employee?",
+        choices: [...roleArr]
+      },
+    ])
+    .then((data) => {
       let roleNum;
-      switch(data.newRole){
-        case 'Sales Lead':
-          roleNum = 1;
-          break;
-        case 'Salesperson':
-          roleNum = 2;
-          break;
-        case 'Lead Engineer':
-          roleNum = 3;
-          break;
-        case 'Software Engineer':
-          roleNum = 4;
-          break;
-        case 'Account Manager':
-          roleNum = 5;
-          break;
-        case 'Accountant':
-          roleNum = 6;
-          break;
-        case 'Legal Team Lead':
-          roleNum = 7;
-          break;
-        case 'Lawyer':
-          roleNum = 8;
-          break;
-      }  
+      for (i=0; i<roleArr.length; i++){
+        if(roleArr[i] === data.newRole){
+          roleNum = i+1;
+        }
+      }
       db.query(`UPDATE employee SET role_id = ${roleNum} WHERE CONCAT(first_name, ' ', last_name) = '${data.employee}';`, function () {
         console.log(`Updated ${data.employee}'s role`);
         mainMenu();
       });
-  })
-
+    })
 }
-
 
 mainMenu();
 
