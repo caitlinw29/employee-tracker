@@ -32,7 +32,9 @@ function mainMenu() {
           case 'View All Employees':
             //Query database for employee table
             employee.runQuery();
-            mainMenu();
+            setTimeout(() => {
+              mainMenu();
+            }, 10);
             break;
           case 'Add Employee':
             addEmployee();
@@ -43,7 +45,9 @@ function mainMenu() {
           case 'View All Roles':
             //Query database for role table
             role.runQuery();
-            mainMenu();
+            setTimeout(() => {
+              mainMenu();
+            }, 10);
             break;
           case 'Add Role':
             addRole();
@@ -51,7 +55,9 @@ function mainMenu() {
           case 'View All Departments':
             //query database for department table
             department.runQuery();
-            mainMenu();
+            setTimeout(() => {
+              mainMenu();
+            }, 10);
             break;
           case 'Add Department':
             addDept();
@@ -59,7 +65,7 @@ function mainMenu() {
           default:
             //exit inquirer 
             process.exit(0);
-        }     
+        }
       });
 }
 
