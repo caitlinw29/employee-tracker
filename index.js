@@ -1,7 +1,7 @@
 require('dotenv').config()
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
-const {department, role, employee, deptArr, roleArr, empArr} = require('./helpers/queries');
+const {department, role, employee, sortByManager, sortByDept, sortByFirstName, sortByLastName, deptArr, roleArr, empArr} = require('./helpers/queries');
 require('./helpers/chalkFiglet');
 
 const db = mysql.createConnection(
@@ -23,7 +23,7 @@ function mainMenu() {
             type: 'list',
             name: 'mainMenu',
             message: 'What would you like to do?',
-            choices: ['View All Employees', 'Add Employee', 'Update Employee Role', 'View All Roles', 'Add Role', 'View All Departments', 'Add Department', 'Delete Entry', 'Quit']
+            choices: ['View All Employees', 'Add Employee', 'Update Employee Role', 'View All Roles', 'Add Role', 'View All Departments', 'Add Department', 'Sort Employees', 'Delete Entry', 'Quit']
         }
       ])
       .then((choice) => {
@@ -61,6 +61,9 @@ function mainMenu() {
             break;
           case 'Add Department':
             addDept();
+            break;
+          case 'Sort Employees':
+            sortEmp();
             break;
           case 'Delete Entry':
             deletion();
@@ -341,6 +344,48 @@ const deleteEmployee = () => {
         }
         mainMenu();
       });
+    })
+}
+
+const sortEmp = () => {
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        name: "sortEmp",
+        message: "How would you like to sort?",
+        choices: ["By Manager", "By Department", "By First Name", "By Last Name"]
+      },
+    ])
+    .then((choice) => {
+      switch(choice.sortEmp){
+        case 'By Manager':
+          sortByManager.runQuery();
+          setTimeout(() => {
+            mainMenu();
+          }, 10);
+          break;
+        case 'By Department':
+          sortByDept.runQuery();
+          setTimeout(() => {
+            mainMenu();
+          }, 10);
+          break;
+        case 'By First Name':
+          sortByFirstName.runQuery();
+          setTimeout(() => {
+            mainMenu();
+          }, 10);
+          break;
+        case 'By Last Name':
+          sortByLastName.runQuery();
+          setTimeout(() => {
+            mainMenu();
+          }, 10);
+          break;
+        default:
+          mainMenu();
+      }
     })
 }
 
