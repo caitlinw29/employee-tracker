@@ -1,83 +1,73 @@
+//bring in all the required packages, classes, and files
 require('dotenv').config();
-const mysql = require('mysql2');
 const inquirer = require('inquirer');
-const {department, role, employee, sortByManager, sortByDept, sortByFirstName, sortByLastName, deptArr, roleArr, empArr, managerArr} = require('./helpers/queries');
+const {db, department, role, employee, sortByManager, sortByDept, sortByFirstName, sortByLastName, deptArr, roleArr, empArr, managerArr} = require('./helpers/queries');
 //runs function on page load to show colored title
 require('./helpers/chalkFiglet');
 require('console.table');
 
-const db = mysql.createConnection(
-  {
-    //TODO: Add your own information to use this app
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASS,
-    database: 'employees_db'
-  }
-); 
-
-
-//function runs on node index.js 
+//function runs on launch of node index.js 
+//main menu options
 function mainMenu() {
   inquirer
-      .prompt([
-        {
-            type: 'list',
-            name: 'mainMenu',
-            message: 'What would you like to do?',
-            choices: ['View All Employees', 'Add Employee', 'Update Employee Role', 'Sort Employees', 'View All Roles', 'Add Role', 'View All Departments', 'Add Department',  'View Utilized Budget', 'Delete Entry', 'Quit']
-        }
-      ])
-      .then((choice) => {
-        switch(choice.mainMenu){
-          case 'View All Employees':
-            //Query database for employee table
-            employee.runQuery();
-            //wait to show main menu to avoid glitchy behavior
-            setTimeout(() => {
-              mainMenu();
-            }, 10);
-            break;
-          case 'Add Employee':
-            addEmployee();
-            break;
-          case 'Update Employee Role':
-            updateEmployee();
-            break;
-          case 'View All Roles':
-            //Query database for role table
-            role.runQuery();
-            setTimeout(() => {
-              mainMenu();
-            }, 10);
-            break;
-          case 'Add Role':
-            addRole();
-            break;
-          case 'View All Departments':
-            //query database for department table
-            department.runQuery();
-            setTimeout(() => {
-              mainMenu();
-            }, 10);
-            break;
-          case 'Add Department':
-            addDept();
-            break;
-          case 'Sort Employees':
-            sortEmp();
-            break;
-          case 'Delete Entry':
-            deletion();
-            break;
-          case 'View Utilized Budget':
-            budget();
-            break;
-          default:
-            //exit inquirer 
-            process.exit(0);
-        }
-      });
+    .prompt([
+      {
+          type: 'list',
+          name: 'mainMenu',
+          message: 'What would you like to do?',
+          choices: ['View All Employees', 'Add Employee', 'Update Employee Role', 'Sort Employees', 'View All Roles', 'Add Role', 'View All Departments', 'Add Department',  'View Utilized Budget', 'Delete Entry', 'Quit']
+      }
+    ])
+    .then((choice) => {
+      switch(choice.mainMenu){
+        case 'View All Employees':
+          //Query database for employee table
+          employee.runQuery();
+          //wait to show main menu to avoid glitchy behavior
+          setTimeout(() => {
+            mainMenu();
+          }, 10);
+          break;
+        case 'Add Employee':
+          addEmployee();
+          break;
+        case 'Update Employee Role':
+          updateEmployee();
+          break;
+        case 'View All Roles':
+          //Query database for role table
+          role.runQuery();
+          setTimeout(() => {
+            mainMenu();
+          }, 10);
+          break;
+        case 'Add Role':
+          addRole();
+          break;
+        case 'View All Departments':
+          //query database for department table
+          department.runQuery();
+          setTimeout(() => {
+            mainMenu();
+          }, 10);
+          break;
+        case 'Add Department':
+          addDept();
+          break;
+        case 'Sort Employees':
+          sortEmp();
+          break;
+        case 'Delete Entry':
+          deletion();
+          break;
+        case 'View Utilized Budget':
+          budget();
+          break;
+        default:
+          //exit inquirer 
+          process.exit(0);
+      }
+    });
 }
 
 const addEmployee = () => {
@@ -109,24 +99,30 @@ const addEmployee = () => {
         type: "list",
         name: "role",
         message: "What is the employee's role?",
-        choices: [...roleArr]
+        choices: [...roleArr] //checks all the current roles
       },
       {
         type: "list",
         name: "manager",
         message: "Who is the employee's manager?",
-        choices: ["None", ...empArr]
+        choices: ["None", ...empArr] //checks all the current employees
       },
     ])
     .then((data) => {
       let roleNum;
       let managerNum;
+      //for each role...
       for (i=0; i<roleArr.length; i++){
+        //if the role matches the selected role
         if(roleArr[i] === data.role){
+          //grab the number to use (since we need a number, not a string)
+          //+1 because we start at 1, not 0
           roleNum = i+1;
         }
       }
+      //same as above, but for employee managers
       for (i=0; i<empArr.length; i++){
+        //if there is no manager, set to null
         if (data.manager === "None"){
           managerNum = null;
         }
@@ -135,6 +131,7 @@ const addEmployee = () => {
         } 
       }   
       db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ('${data.firstName}', '${data.lastName}', ${roleNum}, ${managerNum});`, function () {
+        //add the employee to the database and push them into the array (since the array gets pulled before inquirer starts, and won't update until it stops unless we push into it)
         console.log(`Added ${data.firstName} ${data.lastName} to the database`);
         empArr.push(data.firstName + " " + data.lastName);
         mainMenu();
@@ -176,6 +173,7 @@ const addRole = () => {
   ])
   .then((data) => {
       let deptNum;
+      //convert dept name to number
       for (i=0; i<deptArr.length; i++){
         if(deptArr[i] === data.roleDept){
           deptNum = i+1;
@@ -236,6 +234,7 @@ const updateEmployee = () => {
       },
     ])
     .then((data) => {
+      //convert strings to correct nums
       let roleNum;
       let managerNum;
      
@@ -270,6 +269,7 @@ const deletion = () => {
       },
     ])
     .then((choice) => {
+      //which kind of deletion?
       switch(choice.deleteMenu){
         case 'Department':
           deleteDept();
@@ -299,6 +299,7 @@ const deleteDept = () => {
     .then((data) => {
       db.query(`DELETE FROM department WHERE name= '${data.deleteDept}'`, function () {
         console.log(`Deleted ${data.deleteDept} from database`);
+        //make sure to remove from array as well
         const index = deptArr.indexOf(data.deleteDept);
         if (index > -1) {
           deptArr.splice(index, 1);
@@ -363,6 +364,7 @@ const sortEmp = () => {
       },
     ])
     .then((choice) => {
+      //sorting options
       switch(choice.sortEmp){
         case 'By Manager':
           sortByManager.runQuery();
