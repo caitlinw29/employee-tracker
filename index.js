@@ -276,7 +276,28 @@ const deletion = () => {
           mainMenu();
       }
     })
+}
 
+const deleteDept = () => {
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        name: "deleteDept",
+        message: "Which department would you like to delete?",
+        choices: [...deptArr]
+      },
+    ])
+    .then((data) => {
+      db.query(`DELETE FROM department WHERE name= '${data.deleteDept}'`, function () {
+        console.log(`Deleted ${data.deleteDept} from database`);
+        const index = deptArr.indexOf(data.deleteDept);
+        if (index > -1) {
+          deptArr.splice(index, 1);
+        }
+        mainMenu();
+      });
+    })
 }
 
 mainMenu();
