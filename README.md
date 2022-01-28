@@ -3,9 +3,11 @@
 ## Description
 * Employee Tracker utilizes node, mySQL, and inquirer to keep track of employee and department info from the command line.
 
-* See [video demo]()
+* See [video demo](https://watch.screencastify.com/v/1EEymPjJkAMcJ8b3zbEf)
 
 ![Command line usage](./img/command-lineSS.png)
+![Command line usage](./img/command-lineSS2.png)
+
 ## Installation 
 The application will be invoked by using the following command:
 
